@@ -3,10 +3,10 @@
 # -----------------------------------
 import struct
 
-
 # -----------------------------------
 # define
 # -----------------------------------
+BIG_LITTLE = {'little':'<', 'big':'>'}
 
 
 # -----------------------------------
@@ -15,31 +15,37 @@ import struct
 
 
 def read8(f, order='big', decode=False):
-    big_little = {'little':'<', 'big':'>'}
     if decode:
         return f.read(1).decode()
     else:
-        return struct.unpack(big_little[order] + 'B', f.read(1))[0]
+        return struct.unpack(BIG_LITTLE[order] + 'B', f.read(1))[0]
 
 
 def read16(f, order='big', decode=False):
-    big_little = {'little':'<', 'big':'>'}
     if decode:
         return f.read(2).decode()
     else:
-        return struct.unpack(big_little[order] + 'H', f.read(2))[0]
+        return struct.unpack(BIG_LITTLE[order] + 'H', f.read(2))[0]
 
 
 def read32(f, order='big', decode=False):
-    big_little = {'little':'<', 'big':'>'}
     if decode:
         return f.read(4).decode()
     else:
-        return struct.unpack(big_little[order] + 'L', f.read(4))[0]
+        return struct.unpack(BIG_LITTLE[order] + 'L', f.read(4))[0]
+
+
+def read64(f, order='big', decode=False):
+    if decode:
+        return f.read(8).decode()
+    else:
+        return struct.unpack(BIG_LITTLE[order] + 'Q', f.read(8))[0]
 
 
 def readn(f, size, order='big', decode=False):
-    if size == 32:
+    if size == 64:
+        data = read64(f, order, decode)
+    elif size == 32:
         data = read32(f, order, decode)
     elif size == 16:
         data = read16(f, order, decode)
@@ -61,6 +67,7 @@ def read_null_terminated(f):
         if c.encode() == NULL or c.encode() == SPACE:
             break
     return s
+
 
 # -----------------------------------
 # main

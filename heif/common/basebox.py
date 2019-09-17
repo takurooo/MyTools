@@ -34,7 +34,7 @@ class Box:
         # User extensions use an extended type; in this case, the type field is set to ‘uuid’.
         self.type = futils.read32(f, 'big', decode=True)
         if self.size == 1:
-            pass
+            self.largesize = futils.read64(f, 'big')
         elif self.size == 0:
             # box extends to end of file
             pass
