@@ -53,7 +53,7 @@ class FullBox(Box):
     def __init__(self, f):
         super(FullBox, self).__init__(f)
         v_flags = futils.read32(f, 'big')
-        self.version = (v_flags & 0xf0000000) >> 24
+        self.version = (v_flags & 0xff000000) >> 24
         self.flags = (v_flags & 0x00ffffff)
 
     def print_box(self):
