@@ -55,15 +55,22 @@ class ItemLocationBox(FullBox):
             size = self.base_offset_size * 8
             if 0 < size:
                 self.base_offset.append(futils.readn(f, size, 'big'))
+            else:
+                self.base_offset.append(futils.read8(f, 'big'))
 
             self.extent_count.append(futils.read16(f, 'big'))
             for j in range(self.extent_count[-1]):
                 size = self.offset_size * 8
                 if 0 < size:
                     self.extent_offset[i].append(futils.readn(f, size, 'big'))
+                else:
+                    self.extent_offset[i].append(futils.read8(f, 'big'))
+
                 size = self.length_size * 8
                 if 0 < size:
                     self.extent_length[i].append(futils.readn(f, size, 'big'))
+                else:
+                    self.extent_length[i].append(futils.read8(f, 'big'))
 
     def print_box(self):
         print()
