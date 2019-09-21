@@ -15,28 +15,26 @@ from common.basebox import Box, FullBox
 # -----------------------------------
 # class
 # -----------------------------------
-class MetaBox(FullBox):
+class PrimaryItemBox(FullBox):
     """
-    ISO/IEC 14496-12
-    Box Type: ‘meta’
-    Container: File, Movie Box (‘moov’), or Track Box (‘trak’)
+    Box Type: ‘pitm’
+    Container: Meta box (‘meta’)
     Mandatory: No
     Quantity: Zero or one
     """
 
     def __init__(self, f):
-        super(MetaBox, self).__init__(f)
-        # HandlerBox(handler_type) theHandler;
-        # PrimaryItemBox primary_resource; // optional
-        # DataInformationBox file_locations; // optional
-        # ItemLocationBox item_locations; // optional
-        # ItemProtectionBox protections; // optional
-        # ItemInfoBox item_infos; // optional
-        # IPMPControlBox IPMP_control; // optional
-        # Box other_boxes[]; // optional
+        super(PrimaryItemBox, self).__init__(f)
+        self.item_ID = None
+        self.parse(f)
+        assert self.remain_size(f) == 0, '{} remainsize {} not 0.'.format(self.type, self.remain_size(f))
+
+    def parse(self, f):
+        self.item_ID = futils.read16(f, 'big')
 
     def print_box(self):
-        super(MetaBox, self).print_box()
+        super(PrimaryItemBox, self).print_box()
+        print('item_ID :', self.item_ID)
 
 
 # -----------------------------------

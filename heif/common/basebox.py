@@ -15,6 +15,7 @@ from common import futils
 # class
 # -----------------------------------
 
+
 class Box:
     """
     ISO/IEC 14496-12
@@ -42,16 +43,22 @@ class Box:
             self.usertype = [futils.read8(f, 'big') for _ in range(16)]
 
     def print_box(self):
+        print('--------------------------')
         print('boxtype :', self.type)
         print('boxsize :', hex(self.size))
+        print('--------------------------')
 
     def remain_size(self, f):
         return self.size - (f.tell() - self.start_fp)
+
+    def skip_to_end(self, f):
+        f.seek(self.remain_size(f), 1)
 
 
 class FullBox(Box):
     def __init__(self, f):
         super(FullBox, self).__init__(f)
+        self.is_fullbox = True
         v_flags = futils.read32(f, 'big')
         self.version = (v_flags & 0xff000000) >> 24
         self.flags = (v_flags & 0x00ffffff)
@@ -60,7 +67,6 @@ class FullBox(Box):
         super(FullBox, self).print_box()
         print('version :', self.version)
         print('flags :', self.flags)
-
 
 
 # -----------------------------------

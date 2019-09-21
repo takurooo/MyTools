@@ -58,13 +58,12 @@ def readn(f, size, order='big', decode=False):
 
 
 def read_null_terminated(f):
-    NULL = b'\x00'
-    SPACE = b'\x20'
+    null = b'\x00'
     s = ''
     while True:
         c = read8(f, 'big', decode=True)
         s += c
-        if c.encode() == NULL or c.encode() == SPACE:
+        if c.encode() == null:
             break
     return s
 
