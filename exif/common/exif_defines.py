@@ -12,14 +12,37 @@
 # class
 # -----------------------------------
 class TagType:
-    BYTE = 1
-    ASCII = 2
-    SHORT = 3
-    LONG = 4
-    RATIONAL = 5
-    UNDEFINED = 7
-    SLONG = 9
-    SRATIONAL = 10
+    BYTE = 1  # 8ビット符号なし整数
+    ASCII = 2  # ASCIIコード 終端はNULL文字
+    SHORT = 3  # 16ビット符号なし整数
+    LONG = 4  # 32ビット符号なし整数
+    RATIONAL = 5  # 分子(LONG) 分母(LONG)
+    UNDEFINED = 7  # 8ビット
+    SLONG = 9  # 32ビット符号あり整数
+    SRATIONAL = 10  # 分子(SLONG) 分母(SLONG)
+
+
+TAG_TYPE_SIZE = {
+    TagType.BYTE: 1,
+    TagType.ASCII: 1,
+    TagType.SHORT: 2,
+    TagType.LONG: 4,
+    TagType.RATIONAL: 8,
+    TagType.UNDEFINED: 1,
+    TagType.SLONG: 4,
+    TagType.SRATIONAL: 8
+}
+
+TAG_TYPE_NAME = {
+    TagType.BYTE: 'BYTE',
+    TagType.ASCII: 'ASCII',
+    TagType.SHORT: 'SHORT',
+    TagType.LONG: 'LONG',
+    TagType.RATIONAL: 'RATIONAL',
+    TagType.UNDEFINED: 'UNDEFINED',
+    TagType.SLONG: 'SLONG',
+    TagType.SRATIONAL: 'SRATIONAL'
+}
 
 
 TAG_NAME = {

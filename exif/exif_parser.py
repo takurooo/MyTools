@@ -46,15 +46,19 @@ def test(file_path):
     reference = get_exif_with_PIL(file_path)
 
     exif_reader = ExifReader(file_path)
-    ifd = exif_reader.ifds[0]
+    exif_list = exif_reader.get_exif()
+    exif = exif_list[0]
 
-    for key, v in ifd.items():
-        ref = reference.get(key, None)
+    print('reference  tag len :', len(reference))
+    print('ExifReader tag len :', len(exif))
+
+    for tag_name, tag in exif.items():
+        ref = reference.get(tag_name, None)
         if ref is not None:
-            if v != ref:
-                print("NG : ", key)
+            if tag.val != ref:
+                print("NG : ", tag_name)
                 print('    reference  :', ref)
-                print('    read value :', v)
+                print('    read value :', tag.val)
 
 
 # -----------------------------------
