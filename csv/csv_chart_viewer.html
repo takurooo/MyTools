@@ -1,0 +1,202 @@
+<html>
+
+<head>
+    <title>CSV Chart Viewer</title>
+    <meta http-equiv="content-type" charset="utf-8">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script type="text/javascript"
+        src="https://github.com/nagix/chartjs-plugin-colorschemes/releases/download/v0.2.0/chartjs-plugin-colorschemes.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style/csv_chart_viewer.css">
+</head>
+
+<body>
+    <div id="droparea" effectAllowed="move">Drag and drop CSV file here...</div>
+
+    <form id="charttype">
+        <input type="radio" name="gtype" value="bar" onchange=changedRadio() checked>bar
+        <input type="radio" name="gtype" value="line" onchange=changedRadio()>line
+        <input type="radio" name="gtype" value="radar" onchange=changedRadio()>radar
+    </form>
+
+    <select id="chartcolor" name="color" onchange=changedSelect()>
+        <option value="tableau.Classic10">tableau.Classic10</option>
+        <option value="tableau.ClassicMedium10">tableau.ClassicMedium10</option>
+        <option value="tableau.ClassicLight10">tableau.ClassicLight10</option>
+        <option value="tableau.Classic20">tableau.Classic20</option>
+        <option value="tableau.ClassicGreenOrange6">tableau.ClassicGreenOrange6</option>
+        <option value="tableau.ClassicGreenOrange12">tableau.ClassicGreenOrange12</option>
+        <option value="tableau.ClassicBlueRed6">tableau.ClassicBlueRed6</option>
+        <option value="tableau.ClassicBlueRed12">tableau.ClassicBlueRed12</option>
+    </select>
+
+    <ul id="filelist"></ul>
+
+    <canvas id='chart'></canvas>
+
+    <script>
+        const dropareaElement = document.getElementById('droparea');
+        const filelistElement = document.getElementById('filelist');
+        var gCsvRows = undefined;
+        var gChart = undefined;
+
+        dropareaElement.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            dropareaElement.classList.add('dropover');
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        dropareaElement.addEventListener('dragleave', function (e) {
+            dropareaElement.classList.remove('dropover');
+        });
+
+        dropareaElement.addEventListener('drop', function (e) {
+            e.preventDefault();
+            dropareaElement.classList.remove('dropover');
+            filelistElement.innerHTML = '';
+
+            const droppedFiles = e.dataTransfer.files;
+            for (const file of droppedFiles) {
+                const li = createLiElement(file);
+                filelistElement.appendChild(li);
+
+                const isCsv = (file.type.indexOf('text/csv') === 0);
+                if (isCsv) {
+                    const fileReader = new FileReader();
+                    fileReader.onload = onloadCsv;
+                    fileReader.readAsText(file);
+                }
+
+            }
+        });
+
+        function createLiElement(file) {
+            const liElement = document.createElement('li');
+            const text = file.name;
+            liElement.appendChild(document.createTextNode(text));
+            return liElement;
+        }
+
+        function onloadCsv(e) {
+            const _fileReader = e.target;
+            let readData = _fileReader.result;
+            gCsvRows = formatCsv(readData);
+            showChart(gCsvRows);
+        }
+
+        function formatCsv(data) {
+            let arr = data.split('\n');
+            /* 文字列を格納している配列を配列を格納している配列に変換 */
+            let rows = [];
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] == '') {
+                    break;
+                }
+                rows[i] = arr[i].split(',');
+            }
+            return rows;
+        }
+
+        function toDatasets(dataRows) {
+            datasets = [];
+            for (let i = 0; i < dataRows.length; i++) {
+                const dataRow = dataRows[i];
+                const dataName = dataRow[0];
+                const data = dataRow.slice(1);
+                const fill = false;
+
+                dataset = {
+                    label: dataName,
+                    data: data,
+                    fill: fill,
+                };
+
+                datasets[i] = dataset;
+            }
+            return datasets;
+        }
+
+        function getSelectedChartType() {
+            const element = document.getElementById("charttype");
+            const radioNodeList = element.gtype;
+            const selectedChartType = radioNodeList.value;
+
+            return selectedChartType;
+        }
+
+        function getSelectedChartColor() {
+            const element = document.getElementById("chartcolor");
+            const selectedChartColor = element.value;
+
+            return selectedChartColor;
+        }
+
+        function changedRadio() {
+            if (gCsvRows != undefined) {
+                showChart(gCsvRows)
+            }
+        }
+
+        function changedSelect() {
+            if (gCsvRows != undefined) {
+                showChart(gCsvRows)
+            }
+        }
+
+        function showChart(rows) {
+            /*
+             * [rows format]
+             * title,label1,label2,lable3, ...
+             * dataname,data1,data2,data3, ...
+             * dataname,data1,data2,data3, ...
+             */
+            const headerRow = rows[0]; /* 1行目はヘッダー */
+            const title = headerRow[0];
+            const headerData = headerRow.slice(1);
+
+            const dataRows = rows.slice(1); /* 2行目以降はデータ */
+            datasets = toDatasets(dataRows);
+
+            /* -------------------------------- */
+            /* set chart data                   */
+            /* -------------------------------- */
+            const chartData = {
+                labels: headerData,
+                datasets: datasets
+            };
+            const options = {
+                title: {
+                    display: true,
+                    text: title
+                },
+                plugins: {
+                    colorschemes: {
+                        // https://nagix.github.io/chartjs-plugin-colorschemes/colorchart.html
+                        scheme: getSelectedChartColor()
+
+                    }
+                }
+            };
+
+            const chartType = getSelectedChartType();
+
+            /* -------------------------------- */
+            /* make chart                       */
+            /* -------------------------------- */
+            const canvas = document.getElementById('chart');//.getContext('2d');
+
+            if (gChart) {
+                /* https://www.chartjs.org/docs/latest/developers/api.html#destroy */
+                /* 再描画する際は前回chartを削除しないとメモリリークしてしまう. */
+                gChart.destroy();
+            }
+
+            gChart = new Chart(canvas, {
+                type: chartType,
+                data: chartData,
+                options: options
+            });
+        }
+    </script>
+</body>
+
+</html>

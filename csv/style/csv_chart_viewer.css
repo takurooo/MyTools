@@ -1,0 +1,33 @@
+#droparea {
+	color: #b1b1b180;
+	background-color: #bbf5fffc;
+	border: solid 1px #000000;
+    border-style:dashed;
+	min-height: 100px;
+	padding: 10px;
+	text-align:center;
+	font-size:25;
+
+}
+
+
+#droparea.dropover {
+	color: #b6d7ff80;
+	background-color: rgb(151, 252, 161);
+	border-style:ridge;
+}
+
+#filelist:empty::before {
+	color: #ccc;
+	content: "......";
+}
+
+#filelist img {
+	border: solid 1px #ccc;
+	cursor: pointer;
+	margin: 0 10px;
+	max-height: 128px;
+	max-width: 128px;
+	height: auto;
+	width: auto;
+}
