@@ -1,0 +1,79 @@
+" vim設定ファイル
+
+syntax on
+colorscheme ron
+
+" バックアップをとらない
+set nobackup
+" スワップファイルを作らない
+set noswapfile
+" 矩形選択で文字がなくても右に進める
+set virtualedit=block
+" バックスペースで削除可能
+set backspace=indent,eol,start
+
+set ambiwidth=double
+set wildmenu
+
+" ------------------------
+" 見た目
+" ------------------------
+" 行番号を表示
+set number
+" 折り返し表示をやめる
+set nowrap
+" 行末の1文字先までカーソル移動可能
+set virtualedit=onemore
+" 対応する括弧表示
+set showmatch
+" ステータスラインを常に表示
+set laststatus=2
+" 入力中コマンドをステータス表示する
+set showcmd
+" コマンドラインの補完
+set wildmode=list:longest
+" タイトルをウインドウに表示
+set title
+" ルーラーを表示
+set ruler
+" エラーメッセージ
+set noerrorbells
+" Windowsでパスの区切り文字をスラッシュで扱う
+set shellslash
+" 省略されずに表示
+set display=lastline
+
+
+" ------------------------
+" tab
+" ------------------------
+" タブの代わりに空白文字を挿入 
+set expandtab
+" Tabが対応する空白の数
+set tabstop=4
+" 行頭でのTab文字の表示幅
+set shiftwidth=4
+" 新しい行を作った時に高度な自動インデントを行う
+set smarttab
+" 新しい行のインデントを現在行と同じにする
+set autoindent
+
+" ------------------------
+" 検索
+" ------------------------
+" 検索文字列が小文字の場合は大文字小文字区別しない
+set ignorecase
+" 検索文字列が大文字の場合は大文字小文字区別する
+set smartcase
+" 検索文字列入力時に順次対象文字列をヒットさせる
+set incsearch
+" 最後まで検索したら先頭に戻る
+set wrapscan
+" 検索結果文字列のハイライト表示
+set hlsearch
+
+" コマンド、検索パターンを1000個まで履歴に残す
+set history=1000
+" ステータスラインに表示する情報の指定
+set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=<%l/%L:%p%%>
+
