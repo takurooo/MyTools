@@ -3,6 +3,8 @@
 syntax on
 colorscheme ron
 
+set autochdir
+
 " バックアップをとらない
 set nobackup
 " スワップファイルを作らない
