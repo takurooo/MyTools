@@ -1,8 +1,48 @@
+"------------------------------
+" VundleVim 
+"------------------------------
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+
+" 導入したいプラグインを以下に列挙
+" Plugin '[Github Author]/[Github repo]' の形式で記入
+Plugin 'airblade/vim-gitgutter'
+Plugin 'preservim/nerdtree'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'easymotion/vim-easymotion'
+
+call vundle#end()
+filetype plugin indent on
+
+
+
 " vim設定ファイル
+
+" for easy-motion
+" バックスラッシュ1つでコマンドを実行できる
+map <Leader> <Plug>(easymotion-prefix)
+
+" for vim-airline
+" activate tab
+" let g:airline#extensions#tabline#enabled = 1
+" Ctrl+p PrevTab
+nmap <C-p> <Plug>AirlineSelectPrevTab
+" Ctrl+n PrevTab
+nmap <C-n> <Plug>AirlineSelectNextTab
+
+" for NERDTree
+nnoremap <silent><C-e> :NERDTreeToggle<CR>
+
 
 syntax on
 colorscheme ron
 
+" カレントディレクトリを自動的に変更
 set autochdir
 
 " バックアップをとらない
@@ -77,5 +117,7 @@ set hlsearch
 " コマンド、検索パターンを1000個まで履歴に残す
 set history=1000
 " ステータスラインに表示する情報の指定
-set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=<%l/%L:%p%%>
+"set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=<%l/%L:%p%%>
+
+
 
